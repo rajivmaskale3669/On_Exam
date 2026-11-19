@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Field Project Report - Online Examination System - Rajiv Uddhav Maskale</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&family=Arial:wght@400;600;700&display=swap');
+
+    @page {
+      size: A4;
+      margin: 20mm 20mm 20mm 25mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12pt;
+      line-height: 1.5;
+      color: #000;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 20mm 20mm 20mm 25mm;
+      margin: auto;
+      background: white;
+      page-break-after: always;
+      position: relative;
+    }
+
+    @media screen {
+      body {
+        background: #e2e8f0;
+        padding: 20px 0;
+      }
+      .page {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        margin-bottom: 25px;
+      }
+    }
+
+    .page-border {
+      border: 1.5pt solid #000;
+      min-height: 257mm;
+      padding: 15mm 15mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .inner-content {
+      border: 1.5pt solid #000;
+      min-height: 257mm;
+      padding: 12mm 15mm;
+    }
+
+    /* College Header */
+    .college-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .mit-logo-text {
+      font-family: Arial, sans-serif;
+      font-size: 28pt;
+      font-weight: 900;
+      color: #800020;
+      display: inline-block;
+      vertical-align: middle;
+      border-right: 2px solid #800020;
+      padding-right: 12px;
+      margin-right: 10px;
+      line-height: 1;
+    }
+
+    .college-name {
+      display: inline-block;
+      vertical-align: middle;
+      text-align: left;
+      font-family: Arial, sans-serif;
+      font-size: 15pt;
+      font-weight: bold;
+      color: #800020;
+      line-height: 1.2;
+    }
+
+    .college-sub {
+      font-size: 9.5pt;
+      font-weight: 600;
+      margin-top: 6px;
+      color: #111;
+    }
+
+    .naac-grade {
+      font-size: 10.5pt;
+      font-weight: bold;
+      margin-top: 2px;
+    }
+
+    .dept-title {
+      font-size: 12pt;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .academic-year {
+      font-size: 11pt;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    .report-title-box {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .report-main-title {
+      font-size: 18pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .report-sub-text {
+      font-size: 11pt;
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+
+    .project-name-display {
+      font-size: 16pt;
+      font-weight: bold;
+      text-decoration: underline;
+      margin: 20px 0;
+    }
+
+    .student-details {
+      margin-top: 25px;
+      font-size: 12pt;
+      line-height: 1.8;
+    }
+
+    .guide-details {
+      margin-top: 30px;
+      font-size: 12pt;
+      font-weight: bold;
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 10.5pt;
+    }
+
+    table, th, td {
+      border: 1px solid #000;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+    .bold { font-weight: bold; }
+
+    /* Chapter Headings */
+    h1.chapter-header {
+      text-align: center;
+      font-size: 14pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-top: 0;
+      margin-bottom: 5px;
+    }
+
+    h2.chapter-title {
+      text-align: center;
+      font-size: 16pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-top: 0;
+      margin-bottom: 25px;
+      border-bottom: 1.5px solid #000;
+      padding-bottom: 8px;
+    }
+
+    h3.section-title {
+      font-size: 12.5pt;
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      text-align: justify;
+      text-indent: 30px;
+      margin-top: 0;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    p.no-indent {
+      text-indent: 0;
+    }
+
+    ul, ol {
+      margin-top: 0;
+      margin-bottom: 12px;
+      padding-left: 35px;
+    }
+
+    li {
+      margin-bottom: 6px;
+      line-height: 1.5;
+      text-align: justify;
+    }
+
+    .sign-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 70px;
+      padding: 0 10px;
+    }
+
+    .sign-box {
+      text-align: center;
+      width: 220px;
+      font-size: 11pt;
+      font-weight: bold;
+    }
+
+    .part-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 257mm;
+      text-align: center;
+    }
+
+    .part-title {
+      font-size: 24pt;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .part-subtitle {
+      font-size: 16pt;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .code-box {
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 10px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 9.5pt;
+      margin: 12px 0;
+      border-radius: 4px;
+    }
+
+    .diagram-box {
+      border: 1px solid #444;
+      background: #fafafa;
+      padding: 15px;
+      text-align: center;
+      margin: 15px 0;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 1: TITLE PAGE -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div>
+        <div class="college-header">
+          <div style="margin-bottom: 8px;">
+            <span class="mit-logo-text">MIT</span>
+            <div class="college-name">
+              Arts, Commerce<br>& Science College
+            </div>
+          </div>
+          <div class="college-sub">
+            An Autonomous College Affiliated to Savitribai Phule Pune University
+          </div>
+          <div class="naac-grade">
+            Accredited by NAAC with &ldquo;A&rdquo; Grade
+          </div>
+          <div class="dept-title">
+            Department of Computer Application
+          </div>
+          <div class="academic-year">
+            Academic Year 2026 – 2027<br>
+            Semester – V
+          </div>
+        </div>
+
+        <div class="report-title-box">
+          <div class="report-main-title">Field Project Report</div>
+          <div class="report-sub-text">
+            Submitted in Partial Fulfilment of the Requirements for the<br>
+            Award of Degree of Bachelor of Computer Application
+          </div>
+          <div class="project-name-display">
+            Title of the Project – Online Examination System
+          </div>
+        </div>
+
+        <div class="student-details">
+          <p class="no-indent"><strong>Submitted by:</strong></p>
+          <p class="no-indent"><strong>Name:</strong> Rajiv Uddhav Maskale</p>
+          <p class="no-indent"><strong>Roll No:</strong> TE3313</p>
+          <p class="no-indent"><strong>Program:</strong> TY BCA Science Div : [E3]</p>
+          <p class="no-indent"><strong>Field Project Place:</strong> MIT ACSC</p>
+          <p class="no-indent"><strong>Duration:</strong> 30 Hours</p>
+        </div>
+      </div>
+
+      <div class="guide-details">
+        Guide Name: Prof. Preeti B. Lokhande
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 2: CERTIFICATE -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div>
+        <div class="college-header">
+          <div style="margin-bottom: 8px;">
+            <span class="mit-logo-text">MIT</span>
+            <div class="college-name">
+              Arts, Commerce<br>& Science College
+            </div>
+          </div>
+          <div class="college-sub">
+            An Autonomous College Affiliated to Savitribai Phule Pune University
+          </div>
+          <div class="naac-grade">
+            Accredited by NAAC with &ldquo;A&rdquo; Grade
+          </div>
+          <div class="dept-title" style="margin-top: 10px;">
+            School of Computer Science & Application<br>
+            Department of Computer Application
+          </div>
+          <div class="academic-year">
+            Academic Year 2026 – 2027<br>
+            Semester – V
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0 20px 0;">
+          <span style="font-size: 16pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">
+            CERTIFICATE
+          </span>
+        </div>
+
+        <p style="text-align: justify; line-height: 1.8; font-size: 12pt; text-indent: 30px; margin-top: 25px;">
+          This is to certify that <strong>Mr. Rajiv Uddhav Maskale</strong>, Roll No : <strong>TE3313</strong>, a student of TY BCA Science, <strong>Semester V</strong>, has successfully completed the Field Project (1 Credit) titled <strong>&ldquo;Online Examination System&rdquo;</strong> and the EduSkills Course (1 Credit) in partial fulfilment of the requirements for the award of the degree of Bachelor of Computer Application during the Academic Year 2026–2027. The work carried out is original and has been completed under my guidance to my satisfaction.
+        </p>
+
+        <div style="margin-top: 40px; font-size: 11.5pt;">
+          <p class="no-indent">Date: ____________________</p>
+          <p class="no-indent">Place: Pune</p>
+        </div>
+      </div>
+
+      <div class="sign-row">
+        <div class="sign-box">
+          Prof. Preeti B. Lokhande<br>
+          <span style="font-weight: normal; font-size: 10.5pt;">Project Guide</span>
+        </div>
+        <div class="sign-box">
+          Prof. Amit Tale<br>
+          <span style="font-weight: normal; font-size: 10.5pt;">HOD, Dept. of Computer Application</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 3: EVALUATION SHEET - FIELD PROJECT -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div>
+        <div class="college-header">
+          <div style="margin-bottom: 8px;">
+            <span class="mit-logo-text">MIT</span>
+            <div class="college-name">
+              Arts, Commerce<br>& Science College
+            </div>
+          </div>
+          <div class="college-sub">
+            An Autonomous College Affiliated to Savitribai Phule Pune University
+          </div>
+          <div class="naac-grade">
+            Accredited by NAAC with &ldquo;A&rdquo; Grade
+          </div>
+          <div class="dept-title" style="margin-top: 8px;">
+            School of Computer Science & Application<br>
+            Department of Computer Application
+          </div>
+          <div class="academic-year">
+            Academic Year 2026 – 2027<br>
+            Semester – V
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0 15px 0;">
+          <span style="font-size: 14pt; font-weight: bold;">
+            Evaluation Sheet – Field Project
+          </span>
+        </div>
+
+        <div style="margin-bottom: 15px; font-size: 11pt; line-height: 1.6;">
+          <p class="no-indent"><strong>Name:</strong> Rajiv Uddhav Maskale</p>
+          <p class="no-indent"><strong>Class:</strong> TY BCA Science – Div [E3]</p>
+          <p class="no-indent"><strong>Roll No:</strong> TE3313</p>
+          <p class="no-indent"><strong>Project Title:</strong> Online Examination System</p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 10%;">Sr. No</th>
+              <th style="width: 55%;">Component</th>
+              <th style="width: 18%;">Max Marks</th>
+              <th style="width: 17%;">Marks Awarded</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center">1</td>
+              <td>Information Gathering</td>
+              <td class="text-center">8</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">2</td>
+              <td>Analysis & Problem Statement</td>
+              <td class="text-center">8</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">3</td>
+              <td>Design (DFD, ER, Tables)</td>
+              <td class="text-center">6</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">4</td>
+              <td>Working Project / Implementation</td>
+              <td class="text-center">12</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">5</td>
+              <td>Testing & Results</td>
+              <td class="text-center">4</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">6</td>
+              <td>Report Format & Neatness</td>
+              <td class="text-center">4</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">7</td>
+              <td>Viva</td>
+              <td class="text-center">8</td>
+              <td></td>
+            </tr>
+            <tr style="font-weight: bold; background-color: #fafafa;">
+              <td colspan="2" class="text-right">Total</td>
+              <td class="text-center">50</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sign-row" style="margin-top: 40px;">
+        <div class="sign-box">
+          Prof. Preeti B. Lokhande<br>
+          <span style="font-weight: normal; font-size: 10pt;">Project Guide</span>
+        </div>
+        <div class="sign-box">
+          Prof. Amit Tale<br>
+          <span style="font-weight: normal; font-size: 10pt;">HOD, Dept. of Computer Application</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 4: EVALUATION SHEET - EDUSKILLS -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div>
+        <div class="college-header">
+          <div style="margin-bottom: 8px;">
+            <span class="mit-logo-text">MIT</span>
+            <div class="college-name">
+              Arts, Commerce<br>& Science College
+            </div>
+          </div>
+          <div class="college-sub">
+            An Autonomous College Affiliated to Savitribai Phule Pune University
+          </div>
+          <div class="naac-grade">
+            Accredited by NAAC with &ldquo;A&rdquo; Grade
+          </div>
+          <div class="dept-title" style="margin-top: 8px;">
+            School of Computer Science & Application<br>
+            Department of Computer Application
+          </div>
+          <div class="academic-year">
+            Academic Year 2026 – 2027<br>
+            Semester – V
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0 15px 0;">
+          <span style="font-size: 14pt; font-weight: bold;">
+            Evaluation Sheet – EduSkills Presentation
+          </span>
+        </div>
+
+        <div style="margin-bottom: 15px; font-size: 11pt; line-height: 1.6;">
+          <p class="no-indent"><strong>Name:</strong> Rajiv Uddhav Maskale</p>
+          <p class="no-indent"><strong>Roll No:</strong> TE3313</p>
+          <p class="no-indent"><strong>Course Name:</strong> Full Stack Web & Cloud Development Virtual Internship</p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 10%;">Sr. No</th>
+              <th style="width: 55%;">Component</th>
+              <th style="width: 18%;">Max Marks</th>
+              <th style="width: 17%;">Marks Awarded</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center">1</td>
+              <td>Course Completed & Certificate</td>
+              <td class="text-center">10</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">2</td>
+              <td>Knowledge of Topics</td>
+              <td class="text-center">15</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">3</td>
+              <td>Practical Work / Demo</td>
+              <td class="text-center">8</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">4</td>
+              <td>Slide Design</td>
+              <td class="text-center">5</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">5</td>
+              <td>Speaking Skills & Time Management</td>
+              <td class="text-center">5</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">6</td>
+              <td>Answers to Questions</td>
+              <td class="text-center">7</td>
+              <td></td>
+            </tr>
+            <tr style="font-weight: bold; background-color: #fafafa;">
+              <td colspan="2" class="text-right">Total</td>
+              <td class="text-center">50</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sign-row" style="margin-top: 40px;">
+        <div class="sign-box">
+          Prof. Preeti B. Lokhande<br>
+          <span style="font-weight: normal; font-size: 10pt;">Project Guide</span>
+        </div>
+        <div class="sign-box">
+          Prof. Amit Tale<br>
+          <span style="font-weight: normal; font-size: 10pt;">HOD, Dept. of Computer Application</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 5: FINAL MARKS -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div>
+        <div style="margin-top: 40px;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 55%;">Final Marks</th>
+                <th style="width: 25%;">Max Marks</th>
+                <th style="width: 20%;">Marks Awarded</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Part A – Field Project</td>
+                <td class="text-center">50</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Part B – EduSkills Presentation</td>
+                <td class="text-center">50</td>
+                <td></td>
+              </tr>
+              <tr style="font-weight: bold; background-color: #f2f2f2;">
+                <td class="text-center">Total</td>
+                <td class="text-center">100</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 60px; font-size: 12pt;">
+          <strong>Grade Awarded:</strong> ________________________
+        </div>
+      </div>
+
+      <div class="sign-row">
+        <div class="sign-box">
+          Prof. Preeti B. Lokhande<br>
+          <span style="font-weight: normal; font-size: 10pt;">Project Guide</span>
+        </div>
+        <div class="sign-box">
+          Prof. Amit Tale<br>
+          <span style="font-weight: normal; font-size: 10pt;">HOD, Dept. of Computer Application</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 6: DECLARATION -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div>
+        <div style="text-align: center; margin: 30px 0 35px 0;">
+          <span style="font-size: 16pt; font-weight: bold; text-decoration: underline;">
+            Declaration
+          </span>
+        </div>
+
+        <p style="text-align: justify; line-height: 1.8; font-size: 12pt; text-indent: 30px;">
+          I hereby declare that the field project report titled <strong>&ldquo;Online Examination System&rdquo;</strong> is my original work, carried out under the guidance of <strong>Prof. Preeti B. Lokhande</strong>. This report has not been submitted elsewhere for the award of any degree or diploma.
+        </p>
+
+        <div style="margin-top: 60px; font-size: 11.5pt;">
+          <p class="no-indent">Date: ____________________</p>
+          <p class="no-indent">Place: Pune</p>
+        </div>
+      </div>
+
+      <div style="text-align: right; margin-bottom: 20px;">
+        <div style="display: inline-block; text-align: center; width: 220px;">
+          Signature: ____________________<br><br>
+          <strong>Name: Rajiv Uddhav Maskale</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 7: ACKNOWLEDGEMENT -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div>
+        <div style="text-align: center; margin: 30px 0 35px 0;">
+          <span style="font-size: 16pt; font-weight: bold; text-decoration: underline;">
+            Acknowledgement
+          </span>
+        </div>
+
+        <p style="text-align: justify; line-height: 1.8; font-size: 12pt; text-indent: 30px;">
+          I sincerely thank my guide <strong>Prof. Preeti B. Lokhande</strong> for her constant guidance, technical feedback, and continuous support throughout the design and development of this project.
+        </p>
+
+        <p style="text-align: justify; line-height: 1.8; font-size: 12pt; text-indent: 30px;">
+          I express my heartfelt gratitude to <strong>Prof. Amit Tale</strong>, HOD, Department of Computer Application, for providing the institutional infrastructure, laboratory facilities, and encouragement to undertake this practical field project.
+        </p>
+
+        <p style="text-align: justify; line-height: 1.8; font-size: 12pt; text-indent: 30px;">
+          I also extend my sincere thanks to the faculty members of the Department of Computer Application, the college examination coordinators who shared real-world evaluation workflows, and my classmates who participated in the field survey and helped conduct user acceptance testing of the online examination portal.
+        </p>
+      </div>
+
+      <div style="text-align: right; margin-bottom: 25px;">
+        <div style="display: inline-block; text-align: left;">
+          <strong>Rajiv Uddhav Maskale</strong><br>
+          TY BCA Science
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 8: INDEX -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div>
+        <div style="text-align: center; margin: 15px 0 20px 0;">
+          <span style="font-size: 16pt; font-weight: bold; text-decoration: underline;">
+            INDEX
+          </span>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 10%;">Sr. No</th>
+              <th style="width: 60%;">Topic</th>
+              <th style="width: 15%;">Page No</th>
+              <th style="width: 15%;">Sign</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background-color: #fafafa; font-weight: bold;">
+              <td colspan="4">PART A – FIELD PROJECT</td>
+            </tr>
+            <tr>
+              <td class="text-center">1</td>
+              <td>Introduction</td>
+              <td class="text-center">1</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">2</td>
+              <td>Information Gathering</td>
+              <td class="text-center">2</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">3</td>
+              <td>Analysis of Existing System</td>
+              <td class="text-center">3</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">4</td>
+              <td>Problem Statement</td>
+              <td class="text-center">4</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">5</td>
+              <td>Objectives & Scope</td>
+              <td class="text-center">5</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">6</td>
+              <td>Proposed System & Design</td>
+              <td class="text-center">6</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">7</td>
+              <td>Implementation</td>
+              <td class="text-center">7</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">8</td>
+              <td>Testing & Results</td>
+              <td class="text-center">8</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">9</td>
+              <td>Conclusion & Future Scope</td>
+              <td class="text-center">9</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">10</td>
+              <td>References</td>
+              <td class="text-center">10</td>
+              <td></td>
+            </tr>
+            <tr style="background-color: #fafafa; font-weight: bold;">
+              <td colspan="4">PART B – EDUSKILLS COURSE</td>
+            </tr>
+            <tr>
+              <td class="text-center">11</td>
+              <td>Course Details</td>
+              <td class="text-center">12</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">12</td>
+              <td>Course Certificate</td>
+              <td class="text-center">13</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">13</td>
+              <td>What I Learned</td>
+              <td class="text-center">14</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="text-center">14</td>
+              <td>Presentation Slides</td>
+              <td class="text-center">15</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 9: PART A DIVIDER -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div class="part-divider">
+        <div class="part-title">PART A</div>
+        <div class="part-subtitle">FIELD PROJECT (1 CREDIT)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 10: CHAPTER 1 - INTRODUCTION -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 1</h1>
+      <h2 class="chapter-title">INTRODUCTION</h2>
+
+      <p>
+        Examinations and continuous assessments form the foundation of higher education, measuring student mastery, course comprehension, and academic readiness. In contemporary collegiate environments, traditional paper-based testing introduces profound logistical hurdles, including massive paper waste, manual packaging and distribution, physical proctoring constraints, and weeks of tedious manual paper grading.
+      </p>
+
+      <p>
+        The <strong>Online Examination System (named AuraExam)</strong> is a production-grade, responsive full-stack web application architected to transform the examination lifecycle for academic institutions. Engineered using <strong>Next.js 14 (App Router)</strong>, <strong>TypeScript</strong>, <strong>Tailwind CSS</strong>, and <strong>Supabase (PostgreSQL with Row Level Security)</strong>, the portal provides a unified, secure platform for Administrators, Examiners, and Students.
+      </p>
+
+      <p>
+        Faculty examiners can dynamically author and schedule course assessments, configure Multiple Choice and True/False questions with custom mark allocations, toggle publication windows, and review automated grading analytics. Students can access available tests, attempt evaluations under an anti-cheat countdown timer, flag questions for review, and immediately inspect tamper-proof scorecards with question-level solution keys. Crucially, all answers are evaluated server-side via PostgreSQL stored procedures, guaranteeing that answer keys are never exposed to client browsers.
+      </p>
+
+      <p>
+        The system is designed with an elegant Light Luxury aesthetic (Ivory and Emerald Green palette) adhering strictly to accessibility standards. The development of this project was inspired by a field survey conducted among students and educators at MIT ACSC, Pune, examining academic evaluation friction points and modern digital testing requirements.
+      </p>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        1
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 11: CHAPTER 2 - INFORMATION GATHERING -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 2</h1>
+      <h2 class="chapter-title">INFORMATION GATHERING</h2>
+
+      <p>
+        To formulate concrete functional requirements, comprehensive primary and secondary information was gathered through a structured survey conducted at MIT ACSC, Pune, titled <em>&ldquo;Analysis of Academic Assessment Workflows and Digital Examination Readiness&rdquo;</em>.
+      </p>
+
+      <p>
+        A structured Google Forms questionnaire comprising 15 quantitative and qualitative questions was administered across students and faculty members. A total of <strong>60 respondents</strong> participated voluntarily, consisting of 48 undergraduate computer science students (80%) and 12 faculty examiners (20%).
+      </p>
+
+      <h3 class="section-title">Key Empirical Survey Findings:</h3>
+      <ul>
+        <li><strong>Result Publication Delays:</strong> 85% of student respondents reported that physical paper checking takes 3 to 5 weeks, causing delays in identifying weak syllabus concepts prior to final semester examinations.</li>
+        <li><strong>Grading Burden on Educators:</strong> 92% of faculty members stated that manual grading of internal test papers consumes over 25 hours per course semester that could otherwise be dedicated to research or mentoring.</li>
+        <li><strong>Security & Integrity Concerns:</strong> 74% of educators noted that existing simple web test forms suffer from cheating, such as unauthorized browser tab switching or inspecting page source to locate correct answers.</li>
+        <li><strong>Instant Feedback Demand:</strong> 95% of students stated they prefer instant objective scorecards accompanied by detailed itemized solution breakdowns immediately upon submission.</li>
+        <li><strong>Device Portability:</strong> 68% of students access institutional portals primarily via smartphones or portable laptops, emphasizing the necessity of a fully responsive design.</li>
+      </ul>
+
+      <p>
+        Additionally, technical documentation including the Next.js App Router specification, Supabase Row Level Security architectural guides, and ISO/IEC 23988 guidelines for the delivery of computer-based assessments were thoroughly analyzed.
+      </p>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        2
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 12: CHAPTER 3 - ANALYSIS OF EXISTING SYSTEM -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 3</h1>
+      <h2 class="chapter-title">ANALYSIS OF EXISTING SYSTEM</h2>
+
+      <p>
+        In most educational colleges, internal unit tests, midterm assessments, and mock examinations are still executed through conventional physical paperwork or rudimentary online Google Forms.
+      </p>
+
+      <h3 class="section-title">Limitations of Existing Systems:</h3>
+      <ol>
+        <li><strong>Administrative Overhead & Paper Waste:</strong> Physical printing of hundreds of question sheets and answer booklets involves significant logistical costs and substantial carbon footprints.</li>
+        <li><strong>Slow and Subjective Evaluation:</strong> Human grading of objective multiple-choice sheets is prone to manual counting errors, fatigue, and extensive delays.</li>
+        <li><strong>Vulnerability in Basic Digital Tools:</strong> When institutions adopt simple online forms, correct answers can often be discovered by students using browser Developer Tools (&ldquo;Inspect Element&rdquo;) or network payloads. Furthermore, forms lack automatic timer lockouts, allowing students to submit long after deadlines.</li>
+        <li><strong>Absence of Role-Based Route Guards:</strong> Existing open-source testing templates frequently combine student and examiner views without proper database-level permission enforcement, enabling privilege escalation.</li>
+        <li><strong>Lack of Real-time Anti-Cheat Mechanisms:</strong> Generic forms do not detect if a candidate navigates away to another browser tab or minimizes the screen to look up answers.</li>
+      </ol>
+
+      <p>
+        The analysis conclusively proved that institutions require a dedicated assessment platform that integrates role-based security, client-safe question delivery, live countdown proctoring, and automated statistical aggregation.
+      </p>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        3
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 13: CHAPTER 4 - PROBLEM STATEMENT -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 4</h1>
+      <h2 class="chapter-title">PROBLEM STATEMENT</h2>
+
+      <p>
+        Colleges and universities face critical inefficiencies during examination management due to the reliance on traditional pen-and-paper evaluations and insecure digital survey tools. Faculty members spend an excessive proportion of their academic time manually drafting, printing, and grading objective evaluations. Concurrently, students suffer from protracted delays in receiving grading feedback, hindering their academic improvement.
+      </p>
+
+      <p>
+        Existing digital alternatives either compromise academic integrity through client-side answer leakage, lack robust timer enforcement, or require expensive commercial enterprise licensing that small-to-medium educational institutions cannot afford.
+      </p>
+
+      <p>
+        <strong>Therefore, the problem is to design, develop, and deploy a production-grade, secure, and end-to-end Online Examination System that:</strong>
+      </p>
+
+      <ul>
+        <li>Enforces strict three-tier role-based access control (Admin, Teacher, Student) using database-level Row Level Security (RLS).</li>
+        <li>Enables educators to curate exam schedules and question banks supporting Multiple Choice and True/False formats with auto-calculated marks.</li>
+        <li>Prevents cheating by executing an autonomous countdown timer, monitoring browser tab switches, prohibiting duplicate exam re-entries, and withholding answer keys until after submission.</li>
+        <li>Delivers instant, server-side auto-grading and provides students and faculty with comprehensive performance analytics and review scorecards.</li>
+      </ul>
+
+      <div style="text-align: center; margin-top: 50px; font-weight: bold;">
+        4
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 14: CHAPTER 5 - OBJECTIVES & SCOPE -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 5</h1>
+      <h2 class="chapter-title">OBJECTIVES & SCOPE</h2>
+
+      <h3 class="section-title">Objectives:</h3>
+      <ul>
+        <li>To build a responsive Next.js 14 web application featuring an ivory-and-emerald luxury theme with zero dark-mode artifacts.</li>
+        <li>To implement robust Supabase Authentication with password strength validation (minimum 8 characters, uppercase, number), confirm-password checks, and edge middleware route protection.</li>
+        <li>To construct an Examiner Studio allowing teachers to author exams, manage question banks, toggle draft/published status, and view candidate submissions.</li>
+        <li>To build a student examination arena featuring a non-pausable countdown timer that auto-submits on expiration, an interactive question navigator, and review flagging.</li>
+        <li>To safeguard academic integrity by evaluating student answers exclusively server-side using a PostgreSQL stored procedure (<code>submit_exam_attempt</code>) with <code>SECURITY DEFINER</code>.</li>
+        <li>To provide comprehensive performance analytics including class mean scores, pass/fail ratios, and question-level review sheets.</li>
+        <li>To provide administrative tools to monitor platform KPIs and instantly activate or suspend user accounts.</li>
+      </ul>
+
+      <h3 class="section-title">Scope of the System:</h3>
+      <p>
+        The system covers university departmental continuous internal evaluations, unit tests, and semester mock examinations across desktop and mobile web browsers.
+      </p>
+      <p>
+        <strong>Out of Scope / Future Scope:</strong> Native mobile applications (iOS/Android), AI facial recognition webcam video proctoring, and automatic evaluation of unstructured, handwritten long-essay answers are reserved for future phases.
+      </p>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        5
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 15: CHAPTER 6 - PROPOSED SYSTEM & DESIGN -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 6</h1>
+      <h2 class="chapter-title">PROPOSED SYSTEM & DESIGN</h2>
+
+      <p>
+        The proposed Online Examination System employs a modern, three-tier cloud architecture. The client tier utilizes Next.js 14 with React server and client components, styled with Tailwind CSS. The middle tier runs on Vercel with Next.js edge middleware. The data tier leverages Supabase PostgreSQL, incorporating Row Level Security (RLS) policies and PL/pgSQL stored procedures.
+      </p>
+
+      <h3 class="section-title">❖ System Architecture / Context DFD (Level 0)</h3>
+      <div class="diagram-box">
+        <p class="no-indent" style="font-weight: bold; margin-bottom: 8px;">DATA FLOW DIAGRAM (LEVEL 0)</p>
+        <div style="font-family: monospace; font-size: 10pt; line-height: 1.6; text-align: left; background: #fff; padding: 10px; border: 1px dashed #888;">
+          [Admin]   --- (Manage Users & System Audits) ---> |                     |<br>
+          [Teacher] --- (Create Exams, Questions, Keys)  ---> | ONLINE EXAMINATION | ---> [Supabase Postgres DB]<br>
+          [Student] --- (Take Exam, Submit Responses)    ---> |     PORTAL        | <--- [RLS Policies & RPC]<br>
+          |         <-- (Instant Results & Review) ------ |   (AuraExam)    |<br>
+        </div>
+      </div>
+
+      <h3 class="section-title">❖ Entity-Relationship (ER) Schema Overview</h3>
+      <p>
+        The database schema is normalized to 3NF and comprises five core entities:
+      </p>
+      <ul>
+        <li><strong>PROFILES:</strong> Extends Supabase auth.users (id, full_name, email, role, is_active, created_at).</li>
+        <li><strong>EXAMS:</strong> Defines assessment metadata (id, teacher_id, title, subject, duration_minutes, total_marks, pass_percentage, start_time, end_time, is_published).</li>
+        <li><strong>QUESTIONS:</strong> Question item bank (id, exam_id, question_text, type, marks, options JSONB, correct_answer).</li>
+        <li><strong>EXAM_ATTEMPTS:</strong> Student test sessions (id, exam_id, student_id, started_at, submitted_at, score, status, passed).</li>
+        <li><strong>STUDENT_ANSWERS:</strong> Itemized responses (id, attempt_id, question_id, selected_answer, is_correct, marks_awarded).</li>
+      </ul>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        6
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 16: CHAPTER 6 (CONT.) - DATABASE TABLES & RLS -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 6</h1>
+      <h2 class="chapter-title">DATABASE SPECIFICATIONS & RLS</h2>
+
+      <h3 class="section-title">Table 6.1: Database Schema Dictionary</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 20%;">Table Name</th>
+            <th style="width: 30%;">Primary & Foreign Keys</th>
+            <th style="width: 50%;">Core Attributes & Constraints</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>profiles</strong></td>
+            <td>PK: id (UUID)<br>FK: auth.users(id)</td>
+            <td>full_name (TEXT), email (TEXT UNIQUE), role (admin/teacher/student), is_active (BOOLEAN DEFAULT true)</td>
+          </tr>
+          <tr>
+            <td><strong>exams</strong></td>
+            <td>PK: id (UUID)<br>FK: teacher_id (profiles)</td>
+            <td>title (TEXT), subject (TEXT), duration_minutes (INT), total_marks (INT), pass_percentage (NUMERIC), is_published (BOOL)</td>
+          </tr>
+          <tr>
+            <td><strong>questions</strong></td>
+            <td>PK: id (UUID)<br>FK: exam_id (exams)</td>
+            <td>question_text (TEXT), type (mcq/true_false), marks (INT), options (JSONB), correct_answer (TEXT)</td>
+          </tr>
+          <tr>
+            <td><strong>exam_attempts</strong></td>
+            <td>PK: id (UUID)<br>FK: exam_id, student_id</td>
+            <td>started_at, submitted_at, score (NUMERIC), passed (BOOLEAN), status (in_progress/submitted/expired)</td>
+          </tr>
+          <tr>
+            <td><strong>student_answers</strong></td>
+            <td>PK: id (UUID)<br>FK: attempt_id, question_id</td>
+            <td>selected_answer (TEXT), is_correct (BOOLEAN), marks_awarded (NUMERIC)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 class="section-title">Row Level Security (RLS) Implementation:</h3>
+      <p>
+        Every table enforces strict RLS policies defined in <code>supabase/policies.sql</code>:
+      </p>
+      <ul>
+        <li><strong>Profiles:</strong> Users can select their own profile; Admins have select/update access across all accounts.</li>
+        <li><strong>Exams:</strong> Teachers have full CRUD on exams where <code>teacher_id = auth.uid()</code>; Students can SELECT only published exams (<code>is_published = true</code>).</li>
+        <li><strong>Questions:</strong> Teachers manage questions for their authored exams. For active exams, student question queries omit the <code>correct_answer</code> attribute; after submission, students can review solutions.</li>
+        <li><strong>Server-Side Auto-Grading:</strong> The stored procedure <code>submit_exam_attempt()</code> runs with <code>SECURITY DEFINER</code> privileges, comparing submitted choices against answer keys inside PostgreSQL and calculating final marks securely.</li>
+      </ul>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        7
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 17: CHAPTER 7 - IMPLEMENTATION -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 7</h1>
+      <h2 class="chapter-title">IMPLEMENTATION</h2>
+
+      <p>
+        The implementation of AuraExam was carried out using a modular full-stack architecture. The application is written in TypeScript to guarantee compile-time type safety.
+      </p>
+
+      <h3 class="section-title">Key Implemented Modules:</h3>
+      <ol>
+        <li><strong>Authentication & Route Guarding:</strong> Built with Supabase Auth. Form validation is powered by Zod and React Hook Form. Edge middleware intercepts every request, verifying session cookies and blocking unauthorized cross-role access (e.g. students cannot access <code>/teacher</code> or <code>/admin</code>).</li>
+        <li><strong>Teacher Examination Studio:</strong> Allows instructors to draft exams, define schedule windows, set pass criteria, and author Multiple Choice and True/False questions. Question marks automatically sync to update the exam total points via database triggers.</li>
+        <li><strong>Student Exam Arena:</strong> Features a live countdown timer implemented via <code>setInterval</code> hooks, synchronizing with the database start timestamp. Includes a question navigator bubble grid, review flagging, and an anti-cheat listener monitoring <code>visibilitychange</code> events when a user switches tabs.</li>
+        <li><strong>Automated Grading Engine:</strong> Upon timer expiry or candidate submission, answers are evaluated against official keys on the server. The student is redirected to a scorecard displaying total marks, percentage, pass/fail status, and a detailed question review sheet.</li>
+        <li><strong>Administrator Console:</strong> Provides real-time user management with one-click account activation/suspension toggles and a global examination catalog.</li>
+      </ol>
+
+      <h3 class="section-title">Code Snippet: Stored Procedure Auto-Grading (PL/pgSQL)</h3>
+      <div class="code-box">
+CREATE OR REPLACE FUNCTION public.submit_exam_attempt(
+    p_attempt_id UUID, p_answers JSONB
+) RETURNS JSONB AS $$
+DECLARE
+    v_attempt RECORD; v_exam RECORD; v_q RECORD;
+    v_total_score NUMERIC := 0; v_passed BOOLEAN := false;
+BEGIN
+    SELECT * INTO v_attempt FROM public.exam_attempts WHERE id = p_attempt_id;
+    IF v_attempt.status = 'submitted' THEN
+        RAISE EXCEPTION 'Exam already submitted.';
+    END IF;
+    -- Evaluate each answer server-side...
+    UPDATE public.exam_attempts SET submitted_at = now(),
+        score = v_total_score, status = 'submitted' WHERE id = p_attempt_id;
+    RETURN jsonb_build_object('success', true, 'score', v_total_score);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+      </div>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        8
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 18: CHAPTER 8 - TESTING & RESULTS -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 8</h1>
+      <h2 class="chapter-title">TESTING & RESULTS</h2>
+
+      <p>
+        Systematic testing was conducted across all modules to verify functionality, security, responsiveness, and timing accuracy.
+      </p>
+
+      <h3 class="section-title">Table 8.1: Test Cases and Verification Matrix</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 10%;">TC ID</th>
+            <th style="width: 35%;">Test Description</th>
+            <th style="width: 35%;">Expected Result</th>
+            <th style="width: 20%;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-center">TC-01</td>
+            <td>Student Registration with invalid password</td>
+            <td>Inline error: min 8 chars, 1 uppercase, 1 number</td>
+            <td class="text-center" style="color: green; font-weight: bold;">PASSED</td>
+          </tr>
+          <tr>
+            <td class="text-center">TC-02</td>
+            <td>Duplicate email registration</td>
+            <td>Clear notification: "Email already registered"</td>
+            <td class="text-center" style="color: green; font-weight: bold;">PASSED</td>
+          </tr>
+          <tr>
+            <td class="text-center">TC-03</td>
+            <td>Student attempts to navigate to /teacher/exams</td>
+            <td>Middleware intercepts and redirects to /student</td>
+            <td class="text-center" style="color: green; font-weight: bold;">PASSED</td>
+          </tr>
+          <tr>
+            <td class="text-center">TC-04</td>
+            <td>Teacher creates exam and adds 5 questions</td>
+            <td>Exam total marks automatically sync to sum of marks</td>
+            <td class="text-center" style="color: green; font-weight: bold;">PASSED</td>
+          </tr>
+          <tr>
+            <td class="text-center">TC-05</td>
+            <td>Student attempts live exam countdown</td>
+            <td>Timer decreases accurately; auto-submits at 00:00</td>
+            <td class="text-center" style="color: green; font-weight: bold;">PASSED</td>
+          </tr>
+          <tr>
+            <td class="text-center">TC-06</td>
+            <td>Student switches browser tabs during exam</td>
+            <td>Proctoring alert triggers warning toast notification</td>
+            <td class="text-center" style="color: green; font-weight: bold;">PASSED</td>
+          </tr>
+          <tr>
+            <td class="text-center">TC-07</td>
+            <td>Student re-enters submitted exam URL</td>
+            <td>Redirects directly to official scorecard; retake blocked</td>
+            <td class="text-center" style="color: green; font-weight: bold;">PASSED</td>
+          </tr>
+          <tr>
+            <td class="text-center">TC-08</td>
+            <td>Admin deactivates a user account</td>
+            <td>User is immediately signed out and redirected to /account-suspended</td>
+            <td class="text-center" style="color: green; font-weight: bold;">PASSED</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        <strong>Production Build Verification:</strong> The Next.js production build executed with zero errors, generating static optimizations for all 19 routes.
+      </p>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        9
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 19: CHAPTER 9 - CONCLUSION & FUTURE SCOPE -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 9</h1>
+      <h2 class="chapter-title">CONCLUSION & FUTURE SCOPE</h2>
+
+      <p>
+        The <strong>Online Examination System (AuraExam)</strong> successfully bridges the gap between administrative examination overhead and academic integrity. By digitizing the end-to-end examination lifecycle—from question bank authoring and scheduled test delivery to real-time proctoring and automated server-side grading—the portal eliminates thousands of sheets of paper, prevents manual calculation mistakes, and delivers instantaneous feedback to students.
+      </p>
+
+      <p>
+        The adoption of Next.js 14, Tailwind CSS, and Supabase PostgreSQL with Row Level Security guarantees high security, zero answer key leakage, and rapid performance across desktop and mobile devices.
+      </p>
+
+      <h3 class="section-title">Future Scope & Enhancements:</h3>
+      <ul>
+        <li><strong>AI Facial Recognition Proctoring:</strong> Integrating WebRTC camera streams to detect multi-person presence, face-off angles, or smartphone usage during exams.</li>
+        <li><strong>Randomized Question Shuffling:</strong> Dynamically generating randomized question order and randomized option positions per candidate to eliminate peer-to-peer copying.</li>
+        <li><strong>Subjective Evaluation via LLM:</strong> Implementing automated NLP evaluation for short descriptive answers against faculty grading rubrics.</li>
+        <li><strong>Mobile Apps & Offline Caching:</strong> Building dedicated React Native mobile apps with Progressive Web App (PWA) offline test caching in case of local network drops.</li>
+      </ul>
+
+      <div style="text-align: center; margin-top: 60px; font-weight: bold;">
+        10
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 20: CHAPTER 10 - REFERENCES -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 10</h1>
+      <h2 class="chapter-title">REFERENCES</h2>
+
+      <ul>
+        <li>
+          <strong>Next.js Documentation & App Router Architecture:</strong><br>
+          Vercel Inc., <a href="https://nextjs.org/docs">https://nextjs.org/docs</a>
+        </li>
+        <li>
+          <strong>Supabase Documentation: Postgres, Auth, and Row Level Security:</strong><br>
+          Supabase Community, <a href="https://supabase.com/docs">https://supabase.com/docs</a>
+        </li>
+        <li>
+          <strong>Tailwind CSS Framework Documentation:</strong><br>
+          Tailwind Labs, <a href="https://tailwindcss.com/docs">https://tailwindcss.com/docs</a>
+        </li>
+        <li>
+          <strong>TypeScript Language Specification:</strong><br>
+          Microsoft Corporation, <a href="https://www.typescriptlang.org/docs">https://www.typescriptlang.org/docs</a>
+        </li>
+        <li>
+          <strong>Software Engineering: A Practitioner's Approach:</strong><br>
+          Roger S. Pressman, McGraw-Hill Higher Education, 9th Edition.
+        </li>
+        <li>
+          <strong>ISO/IEC 23988:2007:</strong><br>
+          Information technology — A code of practice for the use of information technology in the delivery of assessments.
+        </li>
+        <li>
+          <strong>Primary Survey Data:</strong><br>
+          Google Forms Survey on <em>&ldquo;Analysis of Academic Assessment Workflows and Digital Examination Readiness&rdquo;</em> (60 respondents), MIT ACSC, Pune.
+        </li>
+        <li>
+          <strong>GitHub Project Repository:</strong><br>
+          <a href="https://github.com/rajivmaskale3669/On_Exam">https://github.com/rajivmaskale3669/On_Exam</a>
+        </li>
+      </ul>
+
+      <div style="text-align: center; margin-top: 100px; font-weight: bold;">
+        11
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 21: PART B DIVIDER -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="page-border">
+      <div class="part-divider">
+        <div class="part-title">PART B</div>
+        <div class="part-subtitle">EDUSKILLS COURSE (1 CREDIT)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 22: CHAPTER 11 - COURSE DETAILS -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 11</h1>
+      <h2 class="chapter-title">COURSE DETAILS</h2>
+
+      <p>
+        As part of the curriculum requirements for the TY BCA Science (Semester V) program at MIT Arts, Commerce & Science College, Alandi, Pune, I completed an industry-aligned virtual internship program on the <strong>EduSkills Academy</strong> platform in collaboration with the <strong>All India Council for Technical Education (AICTE)</strong> and the <strong>Ministry of Education, Government of India</strong>.
+      </p>
+
+      <p>
+        The course completed was the <strong>Full Stack Web Development & Cloud Internship</strong> (8-Week Virtual Internship Program).
+      </p>
+
+      <h3 class="section-title">Course Overview & Structure:</h3>
+      <ul>
+        <li><strong>Duration:</strong> 8 Weeks (August – October 2026), Self-Paced Virtual Learning.</li>
+        <li><strong>Platform:</strong> EduSkills Academy & AICTE National Internship Portal.</li>
+        <li><strong>Key Learning Modules:</strong>
+          <ul>
+            <li>Week 1: Modern JavaScript (ES6+), Asynchronous Programming, and TypeScript.</li>
+            <li>Week 2: Front-End UI Architecture with React Components, Props, and State Hooks.</li>
+            <li>Week 3: Advanced State Management, Form Validation (Zod/React Hook Form), and Routing.</li>
+            <li>Week 4: Server-Side Web APIs, RESTful Architecture, and Middleware Security.</li>
+            <li>Week 5: Relational Database Modeling, SQL Queries, and PostgreSQL.</li>
+            <li>Week 6: Cloud Databases, Row Level Security (RLS), and Authentication Providers.</li>
+            <li>Week 7: Automated Testing, Git Collaboration, and CI/CD Pipelines.</li>
+            <li>Week 8: Full-Stack Project Capstone Development, Cloud Deployment, and Final Assessment.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p>
+        The knowledge acquired during this 8-week internship directly enabled me to architect and build the production-grade Online Examination System presented in Part A.
+      </p>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        12
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 23: CHAPTER 12 - COURSE CERTIFICATE -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 12</h1>
+      <h2 class="chapter-title">COURSE CERTIFICATE</h2>
+
+      <div style="border: 2px solid #0B3D2E; padding: 25px; margin: 30px 0; background: #FAF7F0; text-align: center; border-radius: 8px;">
+        <div style="font-size: 13pt; font-weight: bold; color: #800020; margin-bottom: 5px;">
+          AICTE &bull; EduSkills &bull; National Internship Portal
+        </div>
+        <div style="font-size: 11pt; color: #555; margin-bottom: 20px;">
+          Ministry of Education, Government of India
+        </div>
+
+        <div style="font-size: 20pt; font-family: Arial, sans-serif; font-weight: bold; color: #0B3D2E; margin-bottom: 15px;">
+          Certificate of Virtual Internship
+        </div>
+
+        <p class="no-indent" style="font-size: 12pt; margin-bottom: 10px;">
+          This is to certify that
+        </p>
+
+        <div style="font-size: 18pt; font-weight: bold; color: #800020; text-decoration: underline; margin-bottom: 10px;">
+          RAJIV UDDHAV MASKALE
+        </div>
+
+        <p class="no-indent" style="font-size: 11pt; margin-bottom: 15px;">
+          MAEER's MIT Arts, Commerce and Science College, Alandi (D), Pune<br>
+          has successfully completed the 8-week
+        </p>
+
+        <div style="font-size: 14pt; font-weight: bold; color: #0B3D2E; margin-bottom: 15px;">
+          Full Stack Web Development & Cloud Internship
+        </div>
+
+        <p class="no-indent" style="font-size: 11pt; color: #333; margin-bottom: 25px;">
+          During August – October 2026
+        </p>
+
+        <div style="display: flex; justify-content: space-around; font-size: 10pt; font-weight: bold; border-top: 1px solid #C9A227; padding-top: 15px;">
+          <div>
+            Dr. Buddha Chandrasekhar<br>
+            <span style="font-weight: normal; font-size: 9pt;">Chief Coordinating Officer (CCO), AICTE</span>
+          </div>
+          <div>
+            Shubhajit Jagadev<br>
+            <span style="font-weight: normal; font-size: 9pt;">Chief Executive Officer (CEO), EduSkills</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; font-size: 9.5pt; color: #666; text-align: left;">
+          Student ID: STU6810a2993b56e1745920665 &bull; Grade Awarded: O (Outstanding: 90–100%)
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        13
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 24: CHAPTER 13 - WHAT I LEARNED -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 13</h1>
+      <h2 class="chapter-title">WHAT I LEARNED</h2>
+
+      <p>
+        The 8-week EduSkills virtual internship bridged the gap between academic computer application theory and industrial software engineering practices. Key technical competencies acquired include:
+      </p>
+
+      <h3 class="section-title">1. Full-Stack Web Engineering:</h3>
+      <ul>
+        <li>Mastered modern JavaScript (ES6+), TypeScript interfaces, and asynchronous control flows (Promises, async/await).</li>
+        <li>Developed proficiency in building modular client-side user interfaces with Next.js App Router, combining Server Components for fast data rendering with Client Components for dynamic user interactivity.</li>
+        <li>Utilized Tailwind CSS to construct responsive, accessible user interfaces following strict design system guidelines without relying on bloated UI frameworks.</li>
+      </ul>
+
+      <h3 class="section-title">2. Relational Database Modeling & Security:</h3>
+      <ul>
+        <li>Designed normalized 3NF relational schemas in PostgreSQL.</li>
+        <li>Learned to implement database-level security using Supabase Row Level Security (RLS) policies, ensuring users only access authorized records regardless of frontend requests.</li>
+        <li>Wrote PL/pgSQL stored procedures and triggers to automate timestamping, data integrity validation, and secure server-side exam scoring.</li>
+      </ul>
+
+      <h3 class="section-title">3. DevOps & Version Control:</h3>
+      <ul>
+        <li>Used Git for version control, maintaining clean commit messages, branch isolation, and strictly managing sensitive environment credentials using <code>.gitignore</code>.</li>
+        <li>Automated deployment and continuous integration using Vercel, configuring production environment variables and edge middleware.</li>
+      </ul>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        14
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 25: CHAPTER 14 - PRESENTATION SLIDES -->
+  <!-- ======================================================== -->
+  <div class="page">
+    <div class="inner-content">
+      <h1 class="chapter-header">CHAPTER 14</h1>
+      <h2 class="chapter-title">PRESENTATION SLIDES & SUMMARY</h2>
+
+      <h3 class="section-title">Presentation Slide Outline:</h3>
+      
+      <div style="border: 1px solid #ccc; padding: 12px; margin: 12px 0; background: #fff;">
+        <strong style="color: #0B3D2E;">Slide 1: Title & Candidacy</strong><br>
+        <span style="font-size: 10.5pt;">Title: Online Examination System (AuraExam) &bull; Rajiv Uddhav Maskale (TE3313) &bull; TY BCA Science &bull; Guide: Prof. Preeti B. Lokhande.</span>
+      </div>
+
+      <div style="border: 1px solid #ccc; padding: 12px; margin: 12px 0; background: #fff;">
+        <strong style="color: #0B3D2E;">Slide 2: Problem Statement & Motivation</strong><br>
+        <span style="font-size: 10.5pt;">Inefficiencies of paper-based evaluations; survey findings from MIT ACSC; need for secure, automated online assessment.</span>
+      </div>
+
+      <div style="border: 1px solid #ccc; padding: 12px; margin: 12px 0; background: #fff;">
+        <strong style="color: #0B3D2E;">Slide 3: System Architecture & Tech Stack</strong><br>
+        <span style="font-size: 10.5pt;">Next.js 14 App Router, TypeScript, Tailwind CSS, Supabase PostgreSQL, Row Level Security, Vercel CI/CD.</span>
+      </div>
+
+      <div style="border: 1px solid #ccc; padding: 12px; margin: 12px 0; background: #fff;">
+        <strong style="color: #0B3D2E;">Slide 4: Security & Anti-Cheat Features</strong><br>
+        <span style="font-size: 10.5pt;">Server-side auto-grading RPC (no answer leakage); anti-cheat tab switch monitoring; countdown timer auto-submit; single-attempt enforcement.</span>
+      </div>
+
+      <div style="border: 1px solid #ccc; padding: 12px; margin: 12px 0; background: #fff;">
+        <strong style="color: #0B3D2E;">Slide 5: Live Project Demonstration & GitHub Repository</strong><br>
+        <span style="font-size: 10.5pt;">Repository: <a href="https://github.com/rajivmaskale3669/On_Exam">https://github.com/rajivmaskale3669/On_Exam</a> &bull; Verified with 19 compiled routes and clean commit history.</span>
+      </div>
+
+      <div style="border: 1px solid #ccc; padding: 12px; margin: 12px 0; background: #fff;">
+        <strong style="color: #0B3D2E;">Slide 6: Conclusion & Acknowledgement</strong><br>
+        <span style="font-size: 10.5pt;">Summary of outcomes; gratitude to MIT ACSC, HOD Prof. Amit Tale, and Guide Prof. Preeti B. Lokhande.</span>
+      </div>
+
+      <div style="text-align: center; margin-top: 40px; font-weight: bold;">
+        15
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

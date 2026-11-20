@@ -1,5 +1,5 @@
 -- ====================================================================
--- AURAEXAM: COMPLETE SUPABASE DATABASE SETUP & SCHEMA
+-- AURAEXAM: PRODUCTION SUPABASE DATABASE SCHEMA (ZERO DUMMY DATA)
 -- Project URL: https://nuecfkpumbeuqczmbhzw.supabase.co
 -- Run this entire script in Supabase SQL Editor:
 -- https://supabase.com/dashboard/project/nuecfkpumbeuqczmbhzw/sql/new
@@ -423,171 +423,27 @@ USING (
 );
 
 -- ====================================================================
--- 5. SEED AUTH ACCOUNTS & SAMPLE DATA
--- Creates real accounts with password "ExamPass123!"
+-- 5. REALTIME REPLICATION CONFIGURATION
+-- Enables live Supabase Realtime pub/sub for instant UI reactivity
 -- ====================================================================
 
--- 5.1 Admin User
-INSERT INTO auth.users (
-    instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
-    raw_app_meta_data, raw_user_meta_data, created_at, updated_at
-)
-VALUES (
-    '00000000-0000-0000-0000-000000000000',
-    '11111111-1111-1111-1111-111111111111',
-    'authenticated', 'authenticated',
-    'admin@examportal.edu',
-    crypt('ExamPass123!', gen_salt('bf')),
-    now(),
-    '{"provider":"email","providers":["email"]}'::jsonb,
-    '{"full_name":"Dr. Alistair Sterling (Admin)","role":"admin"}'::jsonb,
-    now(), now()
-)
-ON CONFLICT (id) DO UPDATE
-SET encrypted_password = crypt('ExamPass123!', gen_salt('bf')),
-    email_confirmed_at = now();
+DO $$
+BEGIN
+    BEGIN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.exams;
+    EXCEPTION WHEN duplicate_object THEN
+        -- already added
+    END;
 
--- 5.2 Teacher User
-INSERT INTO auth.users (
-    instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
-    raw_app_meta_data, raw_user_meta_data, created_at, updated_at
-)
-VALUES (
-    '00000000-0000-0000-0000-000000000000',
-    '22222222-2222-2222-2222-222222222222',
-    'authenticated', 'authenticated',
-    'teacher@examportal.edu',
-    crypt('ExamPass123!', gen_salt('bf')),
-    now(),
-    '{"provider":"email","providers":["email"]}'::jsonb,
-    '{"full_name":"Prof. Eleanor Vance (Faculty)","role":"teacher"}'::jsonb,
-    now(), now()
-)
-ON CONFLICT (id) DO UPDATE
-SET encrypted_password = crypt('ExamPass123!', gen_salt('bf')),
-    email_confirmed_at = now();
+    BEGIN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.exam_attempts;
+    EXCEPTION WHEN duplicate_object THEN
+        -- already added
+    END;
 
--- 5.3 Student User
-INSERT INTO auth.users (
-    instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
-    raw_app_meta_data, raw_user_meta_data, created_at, updated_at
-)
-VALUES (
-    '00000000-0000-0000-0000-000000000000',
-    '33333333-3333-3333-3333-333333333333',
-    'authenticated', 'authenticated',
-    'student@examportal.edu',
-    crypt('ExamPass123!', gen_salt('bf')),
-    now(),
-    '{"provider":"email","providers":["email"]}'::jsonb,
-    '{"full_name":"Julian Montgomery (Student)","role":"student"}'::jsonb,
-    now(), now()
-)
-ON CONFLICT (id) DO UPDATE
-SET encrypted_password = crypt('ExamPass123!', gen_salt('bf')),
-    email_confirmed_at = now();
-
--- 5.4 Ensure Profiles Table has matching rows
-INSERT INTO public.profiles (id, full_name, email, role, is_active)
-VALUES
-    ('11111111-1111-1111-1111-111111111111', 'Dr. Alistair Sterling (Admin)', 'admin@examportal.edu', 'admin', true),
-    ('22222222-2222-2222-2222-222222222222', 'Prof. Eleanor Vance (Faculty)', 'teacher@examportal.edu', 'teacher', true),
-    ('33333333-3333-3333-3333-333333333333', 'Julian Montgomery (Student)', 'student@examportal.edu', 'student', true)
-ON CONFLICT (id) DO UPDATE
-SET full_name = EXCLUDED.full_name,
-    role = EXCLUDED.role,
-    is_active = true;
-
--- 5.5 Seed Exams
-INSERT INTO public.exams (id, teacher_id, title, description, subject, duration_minutes, total_marks, pass_percentage, start_time, end_time, is_published)
-VALUES 
-    (
-        'aaaa1111-1111-1111-1111-111111111111',
-        '22222222-2222-2222-2222-222222222222',
-        'Advanced Algorithms & Data Structures',
-        'Comprehensive assessment covering binary search trees, graph algorithms, asymptotic complexity, and dynamic programming fundamentals.',
-        'Computer Science',
-        45,
-        100,
-        60,
-        now() - interval '2 days',
-        now() + interval '30 days',
-        true
-    ),
-    (
-        'bbbb2222-2222-2222-2222-222222222222',
-        '22222222-2222-2222-2222-222222222222',
-        'Classical Mechanics & Thermodynamics',
-        'Midterm examination on Newtonian mechanics, energy conservation principles, and the laws of thermodynamics.',
-        'Physics',
-        60,
-        50,
-        50,
-        now() - interval '1 day',
-        now() + interval '14 days',
-        true
-    ),
-    (
-        'cccc3333-3333-3333-3333-333333333333',
-        '22222222-2222-2222-2222-222222222222',
-        'World Literature: The Romantic Era (Draft)',
-        'Poetry, essays, and themes of nature and individuality in early 19th-century European literature.',
-        'Literature',
-        30,
-        30,
-        70,
-        now() + interval '10 days',
-        now() + interval '20 days',
-        false
-    )
-ON CONFLICT (id) DO NOTHING;
-
--- 5.6 Seed Questions for Exam 1 (Computer Science)
-INSERT INTO public.questions (id, exam_id, question_text, type, marks, options, correct_answer)
-VALUES
-    (
-        'q1111111-1111-1111-1111-111111111111',
-        'aaaa1111-1111-1111-1111-111111111111',
-        'What is the worst-case time complexity of QuickSort when using a naive pivot selection (e.g., always picking the first element)?',
-        'mcq',
-        20,
-        '["O(n log n)", "O(n)", "O(n²)", "O(log n)"]'::jsonb,
-        'O(n²)'
-    ),
-    (
-        'q2222222-2222-2222-2222-222222222222',
-        'aaaa1111-1111-1111-1111-111111111111',
-        'In a Red-Black Tree, every path from a given node to any of its descendant NIL nodes contains the same number of black nodes.',
-        'true_false',
-        20,
-        '["True", "False"]'::jsonb,
-        'True'
-    ),
-    (
-        'q3333333-3333-3333-3333-333333333333',
-        'aaaa1111-1111-1111-1111-111111111111',
-        'Which algorithm is specifically designed to find the shortest path in a graph with non-negative edge weights?',
-        'mcq',
-        20,
-        '["Prim''s Algorithm", "Dijkstra''s Algorithm", "Bellman-Ford Algorithm", "Kruskal''s Algorithm"]'::jsonb,
-        'Dijkstra''s Algorithm'
-    ),
-    (
-        'q4444444-4444-4444-4444-444444444444',
-        'aaaa1111-1111-1111-1111-111111111111',
-        'Dynamic programming requires overlapping subproblems and optimal substructure.',
-        'true_false',
-        20,
-        '["True", "False"]'::jsonb,
-        'True'
-    ),
-    (
-        'q5555555-5555-5555-5555-555555555555',
-        'aaaa1111-1111-1111-1111-111111111111',
-        'What is the auxiliary space complexity of Breadth-First Search (BFS) on a tree of height h with branching factor b?',
-        'mcq',
-        20,
-        '["O(b^h)", "O(h)", "O(b)", "O(1)"]'::jsonb,
-        'O(b^h)'
-    )
-ON CONFLICT (id) DO NOTHING;
+    BEGIN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.profiles;
+    EXCEPTION WHEN duplicate_object THEN
+        -- already added
+    END;
+END $$;

@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Clock, Award, ShieldCheck, AlertTriangle, CheckCircle, ArrowRight, BookOpen } from "lucide-react";
+import { ArrowLeft, Clock, Award, ShieldCheck, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import type { Exam } from "@/types/database";
 import { toast } from "sonner";
 
@@ -32,8 +33,8 @@ export default function ExamInstructionsPage() {
           toast.error("Exam not found.");
           router.push("/student");
         }
-      } catch {
-        toast.error("Failed to load exam instructions.");
+      } catch (err: any) {
+        toast.error(err?.message || "Failed to load exam instructions.");
       } finally {
         setLoading(false);
       }
@@ -48,12 +49,19 @@ export default function ExamInstructionsPage() {
     }
     setIsStarting(true);
     try {
-      const studentId = "33333333-3333-3333-3333-333333333333";
-      await examService.startAttempt(examId, studentId);
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Your session has expired. Please log in.");
+        setIsStarting(false);
+        router.push("/login");
+        return;
+      }
+      await examService.startAttempt(examId, user.id);
       toast.success("Examination session initiated. Good luck!");
       router.push(`/student/exams/${examId}/attempt`);
-    } catch {
-      toast.error("Failed to start exam session.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to start exam session.");
       setIsStarting(false);
     }
   };

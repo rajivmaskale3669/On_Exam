@@ -2,11 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Award, CheckCircle, TrendingUp, BookOpen, ArrowRight } from "lucide-react";
+import { Award, CheckCircle, TrendingUp, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import type { ExamAttempt } from "@/types/database";
 import { toast } from "sonner";
 
@@ -18,11 +20,17 @@ export default function StudentResultsPage() {
     async function load() {
       setLoading(true);
       try {
-        const studentId = "33333333-3333-3333-3333-333333333333";
-        const data = await examService.getAttemptsByStudent(studentId);
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          toast.error("Please sign in to view your results.");
+          setLoading(false);
+          return;
+        }
+        const data = await examService.getAttemptsByStudent(user.id);
         setAttempts(data.filter((a) => a.status === "submitted"));
-      } catch {
-        toast.error("Failed to load results summary.");
+      } catch (err: any) {
+        toast.error(err?.message || "Failed to load results summary.");
       } finally {
         setLoading(false);
       }
@@ -64,9 +72,13 @@ export default function StudentResultsPage() {
               <p className="text-xs uppercase font-semibold text-[#5A5A5A] tracking-wider">
                 Exams Completed
               </p>
-              <p className="font-serif text-3xl font-bold text-[#0B3D2E] mt-1">
-                {totalCompleted}
-              </p>
+              {loading ? (
+                <Skeleton className="h-9 w-12 mt-1" />
+              ) : (
+                <p className="font-serif text-3xl font-bold text-[#0B3D2E] mt-1">
+                  {totalCompleted}
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 rounded-xl bg-[#FAF7F0] text-[#0B3D2E] border border-[#DFC775] flex items-center justify-center">
               <BookOpen className="w-6 h-6" />
@@ -80,9 +92,13 @@ export default function StudentResultsPage() {
               <p className="text-xs uppercase font-semibold text-[#5A5A5A] tracking-wider">
                 Average Score
               </p>
-              <p className="font-serif text-3xl font-bold text-[#C9A227] mt-1">
-                {overallAvg}%
-              </p>
+              {loading ? (
+                <Skeleton className="h-9 w-16 mt-1" />
+              ) : (
+                <p className="font-serif text-3xl font-bold text-[#C9A227] mt-1">
+                  {overallAvg}%
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 rounded-xl bg-[#FDF4D4] text-[#A68218] flex items-center justify-center">
               <TrendingUp className="w-6 h-6" />
@@ -96,9 +112,13 @@ export default function StudentResultsPage() {
               <p className="text-xs uppercase font-semibold text-[#5A5A5A] tracking-wider">
                 Success Rate
               </p>
-              <p className="font-serif text-3xl font-bold text-[#166534] mt-1">
-                {passRate}%
-              </p>
+              {loading ? (
+                <Skeleton className="h-9 w-16 mt-1" />
+              ) : (
+                <p className="font-serif text-3xl font-bold text-[#166534] mt-1">
+                  {passRate}%
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 rounded-xl bg-[#E7F2EE] text-[#166534] flex items-center justify-center">
               <CheckCircle className="w-6 h-6" />
@@ -119,8 +139,9 @@ export default function StudentResultsPage() {
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
-            <div className="text-center py-12 text-[#5A5A5A]">
-              Loading score roster...
+            <div className="p-6 space-y-3">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
             </div>
           ) : attempts.length === 0 ? (
             <div className="text-center py-12 px-4 space-y-3">

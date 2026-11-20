@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { BookOpen, Clock, Award, CheckCircle, ArrowRight, Calendar, AlertCircle } from "lucide-react";
+import { BookOpen, Clock, Award, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import type { Exam, ExamAttempt } from "@/types/database";
 import { toast } from "sonner";
 
@@ -16,25 +18,53 @@ export default function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"available" | "all">("available");
 
-  useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      try {
-        const studentId = "33333333-3333-3333-3333-333333333333";
-        const [examsData, attemptsData] = await Promise.all([
-          examService.getExams("student"),
-          examService.getAttemptsByStudent(studentId),
-        ]);
-        setExams(examsData);
-        setAttempts(attemptsData);
-      } catch {
-        toast.error("Failed to load available examinations.");
-      } finally {
-        setLoading(false);
-      }
+  const loadData = useCallback(async () => {
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const examsPromise = examService.getExams("student");
+      const attemptsPromise = user
+        ? examService.getAttemptsByStudent(user.id)
+        : Promise.resolve([] as ExamAttempt[]);
+
+      const [examsData, attemptsData] = await Promise.all([examsPromise, attemptsPromise]);
+      setExams(examsData);
+      setAttempts(attemptsData);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to load available examinations.");
+    } finally {
+      setLoading(false);
     }
-    loadData();
   }, []);
+
+  useEffect(() => {
+    loadData();
+
+    // Supabase Realtime: instantly shows exams when a teacher publishes one
+    const supabase = createClient();
+    const channel = supabase
+      .channel("student-exams-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "exams" },
+        () => {
+          loadData();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "exam_attempts" },
+        () => {
+          loadData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadData]);
 
   const now = new Date();
 
@@ -114,8 +144,10 @@ export default function StudentDashboard() {
 
       {/* Exam Cards Grid */}
       {loading ? (
-        <div className="text-center py-16 text-[#5A5A5A]">
-          Loading available assessments...
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Skeleton className="h-64 rounded-xl" />
+          <Skeleton className="h-64 rounded-xl" />
+          <Skeleton className="h-64 rounded-xl" />
         </div>
       ) : filteredExams.length === 0 ? (
         <Card className="text-center py-12 px-4 space-y-3">
@@ -124,7 +156,7 @@ export default function StudentDashboard() {
             No Active Examinations Right Now
           </h3>
           <p className="text-xs text-[#5A5A5A] max-w-sm mx-auto">
-            You do not currently have any unattempted examinations open for submission. Check back as new faculty schedules are published.
+            You do not currently have any unattempted examinations open for submission. When faculty publish assessments, they will appear automatically.
           </p>
         </Card>
       ) : (

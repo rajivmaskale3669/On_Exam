@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, Clock, Award, CheckCircle, HelpCircle, Trash2, Eye } from "lucide-react";
+import { ArrowLeft, BookOpen, Clock, Award, HelpCircle, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
 import type { Exam } from "@/types/database";
 import { toast } from "sonner";
@@ -22,8 +23,8 @@ export default function AdminAllExamsPage() {
     try {
       const data = await examService.getExams("admin");
       setExams(data);
-    } catch {
-      toast.error("Failed to load global examination records.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to load global examination records.");
     } finally {
       setLoading(false);
     }
@@ -41,8 +42,8 @@ export default function AdminAllExamsPage() {
       toast.success("Exam purged by administrator.");
       setExamToDelete(null);
       fetchExams();
-    } catch {
-      toast.error("Failed to delete exam.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to delete exam.");
     } finally {
       setIsDeleting(false);
     }
@@ -75,8 +76,10 @@ export default function AdminAllExamsPage() {
       <Card>
         <CardContent className="p-0">
           {loading ? (
-            <div className="text-center py-12 text-[#5A5A5A]">
-              Loading examinations...
+            <div className="p-6 space-y-3">
+              <Skeleton className="h-14 w-full" />
+              <Skeleton className="h-14 w-full" />
+              <Skeleton className="h-14 w-full" />
             </div>
           ) : exams.length === 0 ? (
             <div className="text-center py-12 px-4 space-y-2">

@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { PlusCircle, BookOpen, Clock, Award, Users, CheckCircle, XCircle, MoreVertical, Edit, HelpCircle, FileSpreadsheet, Trash2 } from "lucide-react";
+import { PlusCircle, BookOpen, Clock, Award, CheckCircle, Edit, HelpCircle, FileSpreadsheet, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import type { Exam } from "@/types/database";
 import { toast } from "sonner";
 
@@ -16,22 +18,60 @@ export default function TeacherDashboard() {
   const [loading, setLoading] = useState(true);
   const [examToDelete, setExamToDelete] = useState<Exam | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  const fetchExams = async () => {
+  const fetchExams = useCallback(async (userId?: string) => {
     setLoading(true);
     try {
-      const data = await examService.getExams("teacher", "22222222-2222-2222-2222-222222222222");
+      const supabase = createClient();
+      let uid = userId || currentUserId;
+      if (!uid) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          uid = user.id;
+          setCurrentUserId(user.id);
+        }
+      }
+      if (!uid) {
+        setLoading(false);
+        return;
+      }
+      const data = await examService.getExams("teacher", uid);
       setExams(data);
-    } catch {
-      toast.error("Failed to load examinations.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to load examinations.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUserId]);
 
   useEffect(() => {
-    fetchExams();
-  }, []);
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setCurrentUserId(user.id);
+        fetchExams(user.id);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    // Supabase Realtime subscription for teacher exams table
+    const channel = supabase
+      .channel("teacher-exams-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "exams" },
+        () => {
+          fetchExams();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchExams]);
 
   const handleTogglePublish = async (exam: Exam) => {
     try {
@@ -44,8 +84,8 @@ export default function TeacherDashboard() {
       } else {
         toast.error("Failed to toggle publish status.");
       }
-    } catch {
-      toast.error("Error updating exam status.");
+    } catch (err: any) {
+      toast.error(err?.message || "Error updating exam status.");
     }
   };
 
@@ -61,8 +101,8 @@ export default function TeacherDashboard() {
       } else {
         toast.error("Failed to delete exam.");
       }
-    } catch {
-      toast.error("An error occurred while deleting.");
+    } catch (err: any) {
+      toast.error(err?.message || "An error occurred while deleting.");
     } finally {
       setIsDeleting(false);
     }
@@ -160,8 +200,10 @@ export default function TeacherDashboard() {
 
         <CardContent className="p-0">
           {loading ? (
-            <div className="text-center py-12 text-[#5A5A5A]">
-              Loading examinations...
+            <div className="p-6 space-y-4">
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
             </div>
           ) : exams.length === 0 ? (
             <div className="text-center py-12 px-4 space-y-3">

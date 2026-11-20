@@ -4,20 +4,14 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
-  Award,
   CheckCircle,
   XCircle,
-  Clock,
   ArrowLeft,
-  Share2,
-  FileText,
-  RotateCcw,
-  Sparkles,
-  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
 import type { ExamAttempt, Question, StudentAnswer } from "@/types/database";
 import { toast } from "sonner";
@@ -47,8 +41,8 @@ export default function ExamResultPage() {
         } else {
           toast.error("Result record not found.");
         }
-      } catch {
-        toast.error("Failed to load result.");
+      } catch (err: any) {
+        toast.error(err?.message || "Failed to load result.");
       } finally {
         setLoading(false);
       }
@@ -58,8 +52,10 @@ export default function ExamResultPage() {
 
   if (loading) {
     return (
-      <div className="text-center py-24 text-[#5A5A5A]">
-        Retrieving official scorecard...
+      <div className="max-w-4xl mx-auto space-y-8">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-64 w-full rounded-2xl" />
+        <Skeleton className="h-48 w-full rounded-xl" />
       </div>
     );
   }
@@ -240,7 +236,7 @@ export default function ExamResultPage() {
 
                 {/* Options display with correct highlighting */}
                 <div className="pl-10 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {q.options.map((opt, oIdx) => {
+                  {q.options?.map((opt, oIdx) => {
                     const isOfficialCorrect = opt === q.correct_answer;
                     const isUserChoice = opt === selected;
 

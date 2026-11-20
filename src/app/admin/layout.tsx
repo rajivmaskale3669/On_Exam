@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { createClient } from "@/lib/supabase/client";
-import { examService } from "@/lib/data/examService";
 import type { Profile } from "@/types/database";
 import { Loader2 } from "lucide-react";
 
@@ -44,10 +43,7 @@ export default function AdminLayout({
             });
           }
         } else {
-          // Demo fallback
-          const profiles = await examService.getProfiles();
-          const demoAdmin = profiles.find((p) => p.role === "admin") || null;
-          setProfile(demoAdmin);
+          setProfile(null);
         }
       } catch {
         // Fallback

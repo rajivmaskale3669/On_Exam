@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, Users, Award, Calendar, CheckCircle, XCircle, Clock, Eye } from "lucide-react";
+import { ArrowLeft, Users, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import type { Exam, ExamAttempt } from "@/types/database";
 import { toast } from "sonner";
 
@@ -19,22 +21,46 @@ export default function SubmissionsPage() {
   const [attempts, setAttempts] = useState<ExamAttempt[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      try {
-        const examData = await examService.getExamById(examId);
-        const attemptsData = await examService.getAttemptsByExam(examId);
-        setExam(examData);
-        setAttempts(attemptsData);
-      } catch {
-        toast.error("Failed to load submissions.");
-      } finally {
-        setLoading(false);
-      }
+  const loadData = useCallback(async () => {
+    try {
+      const [examData, attemptsData] = await Promise.all([
+        examService.getExamById(examId),
+        examService.getAttemptsByExam(examId),
+      ]);
+      setExam(examData);
+      setAttempts(attemptsData);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to load submissions.");
+    } finally {
+      setLoading(false);
     }
-    loadData();
   }, [examId]);
+
+  useEffect(() => {
+    loadData();
+
+    // Supabase Realtime subscription for live submission updates
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`submissions-${examId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "exam_attempts",
+          filter: `exam_id=eq.${examId}`,
+        },
+        () => {
+          loadData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [examId, loadData]);
 
   const totalSubmissions = attempts.filter((a) => a.status === "submitted").length;
   const passedCount = attempts.filter((a) => a.status === "submitted" && a.passed).length;
@@ -54,7 +80,7 @@ export default function SubmissionsPage() {
               Candidate Submissions
             </h1>
             <p className="text-xs text-[#5A5A5A] mt-0.5">
-              Exam: <strong className="text-[#0B3D2E]">{exam?.title}</strong> ({exam?.subject})
+              Exam: <strong className="text-[#0B3D2E]">{exam?.title || "Loading..."}</strong> ({exam?.subject || "Assessment"})
             </p>
           </div>
         </div>
@@ -76,15 +102,17 @@ export default function SubmissionsPage() {
           <div>
             <CardTitle>Graded Candidate Records</CardTitle>
             <CardDescription>
-              All submissions are graded automatically against the official answer keys upon submission.
+              All submissions are graded automatically against the official answer keys upon submission. Live updates appear automatically.
             </CardDescription>
           </div>
         </CardHeader>
 
         <CardContent className="p-0">
           {loading ? (
-            <div className="text-center py-12 text-[#5A5A5A]">
-              Loading candidate records...
+            <div className="p-6 space-y-3">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
             </div>
           ) : attempts.length === 0 ? (
             <div className="text-center py-12 px-4 space-y-3">
@@ -93,7 +121,7 @@ export default function SubmissionsPage() {
                 No Candidate Attempts Yet
               </h3>
               <p className="text-xs text-[#5A5A5A] max-w-sm mx-auto">
-                Candidate scores will appear in real-time as students submit their exams.
+                Candidate scores will appear here in real time as students submit their exams.
               </p>
             </div>
           ) : (
@@ -119,7 +147,7 @@ export default function SubmissionsPage() {
                             {att.student?.full_name || "Enrolled Student"}
                           </span>
                           <span className="text-xs text-[#5A5A5A]">
-                            {att.student?.email || "student@examportal.edu"}
+                            {att.student?.email || "Student Account"}
                           </span>
                         </td>
                         <td className="px-6 py-4">

@@ -2,11 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { History, Award, Clock, ArrowRight, BookOpen, CheckCircle, XCircle } from "lucide-react";
+import { History, Award, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import type { ExamAttempt } from "@/types/database";
 import { toast } from "sonner";
 
@@ -18,11 +20,17 @@ export default function ExamHistoryPage() {
     async function load() {
       setLoading(true);
       try {
-        const studentId = "33333333-3333-3333-3333-333333333333";
-        const data = await examService.getAttemptsByStudent(studentId);
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          toast.error("Please sign in to view your history.");
+          setLoading(false);
+          return;
+        }
+        const data = await examService.getAttemptsByStudent(user.id);
         setAttempts(data);
-      } catch {
-        toast.error("Failed to load attempt history.");
+      } catch (err: any) {
+        toast.error(err?.message || "Failed to load attempt history.");
       } finally {
         setLoading(false);
       }
@@ -60,8 +68,9 @@ export default function ExamHistoryPage() {
 
         <CardContent className="p-0">
           {loading ? (
-            <div className="text-center py-12 text-[#5A5A5A]">
-              Loading academic records...
+            <div className="p-6 space-y-3">
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full" />
             </div>
           ) : attempts.length === 0 ? (
             <div className="text-center py-12 px-4 space-y-3">

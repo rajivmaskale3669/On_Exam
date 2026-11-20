@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { createClient } from "@/lib/supabase/client";
-import { examService } from "@/lib/data/examService";
 import type { Profile } from "@/types/database";
 import { Loader2 } from "lucide-react";
 
@@ -45,10 +44,7 @@ export default function TeacherLayout({
             });
           }
         } else {
-          // Fallback demo profile for teacher
-          const profiles = await examService.getProfiles();
-          const demoTeacher = profiles.find((p) => p.role === "teacher") || null;
-          setProfile(demoTeacher);
+          setProfile(null);
         }
       } catch {
         // Fallback

@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Users, Search, CheckCircle, XCircle, Shield, UserX, UserCheck } from "lucide-react";
+import { ArrowLeft, Users, Search, UserX, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
 import type { Profile, UserRole } from "@/types/database";
 import { toast } from "sonner";
@@ -23,8 +24,8 @@ export default function UserManagementPage() {
     try {
       const data = await examService.getProfiles();
       setProfiles(data);
-    } catch {
-      toast.error("Failed to load user roster.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to load user roster.");
     } finally {
       setLoading(false);
     }
@@ -46,8 +47,8 @@ export default function UserManagementPage() {
       } else {
         toast.error("Failed to update user status.");
       }
-    } catch {
-      toast.error("Error toggling account status.");
+    } catch (err: any) {
+      toast.error(err?.message || "Error toggling account status.");
     } finally {
       setActionLoadingId(null);
     }
@@ -55,8 +56,8 @@ export default function UserManagementPage() {
 
   const filtered = profiles.filter((p) => {
     const matchesSearch =
-      p.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.email.toLowerCase().includes(searchTerm.toLowerCase());
+      (p.full_name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.email || "").toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = roleFilter === "all" || p.role === roleFilter;
     return matchesSearch && matchesRole;
   });
@@ -146,8 +147,10 @@ export default function UserManagementPage() {
       <Card>
         <CardContent className="p-0">
           {loading ? (
-            <div className="text-center py-12 text-[#5A5A5A]">
-              Loading user accounts...
+            <div className="p-6 space-y-3">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-12 px-4 space-y-2">
@@ -173,7 +176,7 @@ export default function UserManagementPage() {
                     <tr key={user.id} className="hover:bg-[#FAF7F0]/60 transition-colors">
                       <td className="px-6 py-4">
                         <span className="font-semibold text-[#0B3D2E] block">
-                          {user.full_name}
+                          {user.full_name || "User Account"}
                         </span>
                         <span className="text-xs text-[#5A5A5A]">{user.email}</span>
                       </td>

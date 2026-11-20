@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { examSchema, type ExamInput } from "@/lib/validations/exam";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
@@ -46,8 +47,16 @@ export default function CreateExamPage() {
   const onSubmit = async (data: ExamInput) => {
     setIsLoading(true);
     try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Session expired. Please sign in again.");
+        router.push("/login");
+        return;
+      }
+
       const newExam = await examService.createExam({
-        teacher_id: "22222222-2222-2222-2222-222222222222",
+        teacher_id: user.id,
         title: data.title,
         description: data.description || null,
         subject: data.subject,
@@ -61,8 +70,8 @@ export default function CreateExamPage() {
 
       toast.success(`Exam "${newExam.title}" created successfully! Now let's add questions.`);
       router.push(`/teacher/exams/${newExam.id}/questions`);
-    } catch {
-      toast.error("Failed to create exam. Please check your inputs.");
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to create exam. Please check your inputs.");
     } finally {
       setIsLoading(false);
     }

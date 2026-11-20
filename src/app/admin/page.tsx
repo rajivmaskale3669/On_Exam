@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -8,15 +8,14 @@ import {
   BookOpen,
   Award,
   UserCheck,
-  UserX,
   ArrowRight,
   TrendingUp,
-  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
 export default function AdminDashboardPage() {
@@ -31,20 +30,39 @@ export default function AdminDashboardPage() {
   } | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadStats() {
-      setLoading(true);
-      try {
-        const data = await examService.getAdminPlatformStats();
-        setStats(data);
-      } catch {
-        toast.error("Failed to load platform analytics.");
-      } finally {
-        setLoading(false);
-      }
+  const loadStats = useCallback(async () => {
+    try {
+      const data = await examService.getAdminPlatformStats();
+      setStats(data);
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to load platform analytics.");
+    } finally {
+      setLoading(false);
     }
-    loadStats();
   }, []);
+
+  useEffect(() => {
+    loadStats();
+
+    // Realtime: updates platform KPI metrics when any user, exam, or attempt is added/modified
+    const supabase = createClient();
+    const channel = supabase
+      .channel("admin-stats-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
+        loadStats();
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "exams" }, () => {
+        loadStats();
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "exam_attempts" }, () => {
+        loadStats();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadStats]);
 
   return (
     <div className="space-y-8">
@@ -85,9 +103,13 @@ export default function AdminDashboardPage() {
               <p className="text-xs uppercase font-semibold text-[#5A5A5A] tracking-wider">
                 Total Registered Users
               </p>
-              <p className="font-serif text-3xl font-bold text-[#0B3D2E] mt-1">
-                {stats?.totalUsers || 0}
-              </p>
+              {loading ? (
+                <Skeleton className="h-9 w-16 mt-1" />
+              ) : (
+                <p className="font-serif text-3xl font-bold text-[#0B3D2E] mt-1">
+                  {stats?.totalUsers || 0}
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 rounded-xl bg-[#E7F2EE] text-[#0B3D2E] flex items-center justify-center">
               <Users className="w-6 h-6" />
@@ -101,9 +123,13 @@ export default function AdminDashboardPage() {
               <p className="text-xs uppercase font-semibold text-[#5A5A5A] tracking-wider">
                 Enrolled Students
               </p>
-              <p className="font-serif text-3xl font-bold text-[#166534] mt-1">
-                {stats?.totalStudents || 0}
-              </p>
+              {loading ? (
+                <Skeleton className="h-9 w-16 mt-1" />
+              ) : (
+                <p className="font-serif text-3xl font-bold text-[#166534] mt-1">
+                  {stats?.totalStudents || 0}
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 rounded-xl bg-[#E7F2EE] text-[#166534] flex items-center justify-center">
               <UserCheck className="w-6 h-6" />
@@ -117,9 +143,13 @@ export default function AdminDashboardPage() {
               <p className="text-xs uppercase font-semibold text-[#5A5A5A] tracking-wider">
                 Active Faculty / Examiners
               </p>
-              <p className="font-serif text-3xl font-bold text-[#0E2A47] mt-1">
-                {stats?.totalTeachers || 0}
-              </p>
+              {loading ? (
+                <Skeleton className="h-9 w-16 mt-1" />
+              ) : (
+                <p className="font-serif text-3xl font-bold text-[#0E2A47] mt-1">
+                  {stats?.totalTeachers || 0}
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 rounded-xl bg-[#FAF7F0] text-[#0E2A47] border border-[#DFC775] flex items-center justify-center">
               <Award className="w-6 h-6" />
@@ -133,9 +163,13 @@ export default function AdminDashboardPage() {
               <p className="text-xs uppercase font-semibold text-[#5A5A5A] tracking-wider">
                 Total Exam Attempts
               </p>
-              <p className="font-serif text-3xl font-bold text-[#C9A227] mt-1">
-                {stats?.totalAttempts || 0}
-              </p>
+              {loading ? (
+                <Skeleton className="h-9 w-16 mt-1" />
+              ) : (
+                <p className="font-serif text-3xl font-bold text-[#C9A227] mt-1">
+                  {stats?.totalAttempts || 0}
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 rounded-xl bg-[#FDF4D4] text-[#A68218] flex items-center justify-center">
               <TrendingUp className="w-6 h-6" />

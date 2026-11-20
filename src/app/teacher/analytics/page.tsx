@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { BarChart3, TrendingUp, CheckCircle, XCircle, Award, Users, BookOpen } from "lucide-react";
+import { TrendingUp, CheckCircle, XCircle, Users, BookOpen } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
 export default function TeacherAnalyticsPage() {
@@ -23,16 +25,40 @@ export default function TeacherAnalyticsPage() {
     async function load() {
       setLoading(true);
       try {
-        const stats = await examService.getTeacherAnalytics("22222222-2222-2222-2222-222222222222");
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          toast.error("Please sign in to access analytics.");
+          setLoading(false);
+          return;
+        }
+        const stats = await examService.getTeacherAnalytics(user.id);
         setData(stats);
-      } catch {
-        toast.error("Failed to load analytics.");
+      } catch (err: any) {
+        toast.error(err?.message || "Failed to load analytics.");
       } finally {
         setLoading(false);
       }
     }
     load();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div className="pb-4 border-b border-[#DFC775]/50">
+          <Skeleton className="h-8 w-64 mb-2" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -166,7 +192,9 @@ export default function TeacherAnalyticsPage() {
                 Cohort Quality Note
               </h4>
               <p className="text-xs text-[#5A5A5A] leading-relaxed">
-                The cohort displays solid engagement across foundational algorithm topics. Continued focus on time-sensitive graph traversals is advised.
+                {data && data.totalSubmissions > 0
+                  ? `Based on ${data.totalSubmissions} live student submission${data.totalSubmissions > 1 ? "s" : ""}, the overall pass rate stands at ${data.passRate}%.`
+                  : "No submissions have been recorded yet. Real-time statistics will populate dynamically when candidates submit attempts."}
               </p>
             </div>
           </CardContent>
@@ -183,24 +211,30 @@ export default function TeacherAnalyticsPage() {
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y divide-[#F4EFE2]">
-              {data?.exams.map((exam) => (
-                <div key={exam.id} className="p-4 flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-[#0B3D2E]">{exam.title}</p>
-                    <p className="text-xs text-[#5A5A5A]">{exam.subject} • {exam.duration_minutes} Mins</p>
+            {!data?.exams || data.exams.length === 0 ? (
+              <div className="p-6 text-center text-xs text-[#5A5A5A]">
+                No exams created yet.
+              </div>
+            ) : (
+              <div className="divide-y divide-[#F4EFE2]">
+                {data.exams.map((exam) => (
+                  <div key={exam.id} className="p-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-[#0B3D2E]">{exam.title}</p>
+                      <p className="text-xs text-[#5A5A5A]">{exam.subject} • {exam.duration_minutes} Mins</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs font-bold text-[#C9A227] block">
+                        {exam.total_marks} Marks
+                      </span>
+                      <span className="text-[11px] text-[#5A5A5A]">
+                        Pass: {exam.pass_percentage}%
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xs font-bold text-[#C9A227] block">
-                      {exam.total_marks} Marks
-                    </span>
-                    <span className="text-[11px] text-[#5A5A5A]">
-                      Pass Threshold: {exam.pass_percentage}%
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

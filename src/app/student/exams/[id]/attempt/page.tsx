@@ -4,22 +4,18 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   Clock,
-  Award,
-  AlertTriangle,
-  Bookmark,
-  CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
   Send,
   Flag,
-  HelpCircle,
   ShieldAlert,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 import { examService } from "@/lib/data/examService";
+import { createClient } from "@/lib/supabase/client";
 import type { Exam, StudentQuestionView, ExamAttempt } from "@/types/database";
 import { toast } from "sonner";
 
@@ -27,7 +23,6 @@ export default function ExamAttemptPage() {
   const router = useRouter();
   const params = useParams();
   const examId = params.id as string;
-  const studentId = "33333333-3333-3333-3333-333333333333";
 
   const [exam, setExam] = useState<Exam | null>(null);
   const [questions, setQuestions] = useState<StudentQuestionView[]>([]);
@@ -48,13 +43,24 @@ export default function ExamAttemptPage() {
   // Modals & submittal state
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [tabSwitches, setTabSwitches] = useState(0);
+  const [, setTabSwitches] = useState(0);
 
   // Initialize and load attempt
   useEffect(() => {
     async function initExam() {
       setLoading(true);
       try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+          toast.error("Your session has expired. Please log in.");
+          router.push("/login");
+          return;
+        }
+
+        const studentId = user.id;
+
         const [examData, questionsData, attemptData] = await Promise.all([
           examService.getExamById(examId),
           examService.getQuestionsForStudent(examId),
@@ -85,8 +91,8 @@ export default function ExamAttemptPage() {
         const remainingSeconds = Math.max(0, Math.floor((totalDurationMs - elapsedMs) / 1000));
 
         setTimeLeft(remainingSeconds);
-      } catch {
-        toast.error("Failed to load exam arena.");
+      } catch (err: any) {
+        toast.error(err?.message || "Failed to load exam arena.");
         router.push("/student");
       } finally {
         setLoading(false);
@@ -129,8 +135,8 @@ export default function ExamAttemptPage() {
 
       toast.success("Examination submitted and auto-graded successfully!");
       router.push(`/student/attempts/${attempt.id}/result`);
-    } catch {
-      toast.error("Network error during submission. Retrying...");
+    } catch (err: any) {
+      toast.error(err?.message || "Error submitting exam. Please retry.");
       setIsSubmitting(false);
     }
   }, [attempt, answers, isSubmitting, router]);
@@ -138,7 +144,6 @@ export default function ExamAttemptPage() {
   // Timer countdown hook
   useEffect(() => {
     if (timeLeft <= 0 && !loading && attempt && attempt.status !== "submitted") {
-      // Auto-submit when time expires!
       toast.warning("Time limit expired! Automatically finalizing submission...");
       submitExam();
       return;
@@ -289,7 +294,7 @@ export default function ExamAttemptPage() {
 
               {/* Options List */}
               <div className="space-y-3 pt-2">
-                {currentQ?.options.map((option, idx) => {
+                {currentQ?.options?.map((option, idx) => {
                   const isSelected = answers[currentQ.id] === option;
                   return (
                     <div
